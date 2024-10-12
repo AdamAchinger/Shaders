@@ -7,6 +7,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float r = 0.1;
     float rSpeed = 4.0;
+    vec3 hueColor = vec3(0.1216, 0.4588, 0.2824);
     
     float xPos = (cos(iTime*rSpeed+1.5) * r*2.0) + 0.5;
     float yPos = (sin(iTime*rSpeed+1.5) * r*2.0) +(0.5 * dim);
@@ -57,7 +58,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     
     // PostProcess 
     float redMask = max(max(max(dis,dis2),dis3),addF);
-    vec3 redColor = vec3(1,0,0) * redMask;
+    vec3 redColor = hueColor * redMask;
     
     vec3 color = vec3(pow(add,5.0)) * 0.25;
     color += redColor * 0.5;
