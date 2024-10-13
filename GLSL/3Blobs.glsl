@@ -7,7 +7,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float r = 0.1;
     float rSpeed = 4.0;
-    vec3 hueColor = vec3(0.1216, 0.4588, 0.2824);
+    vec3 hueColor = vec3(0.1843, 0.0, 1.0);
     
     float xPos = (cos(iTime*rSpeed+1.5) * r*2.0) + 0.5;
     float yPos = (sin(iTime*rSpeed+1.5) * r*2.0) +(0.5 * dim);
