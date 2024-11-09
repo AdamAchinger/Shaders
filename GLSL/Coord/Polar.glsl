@@ -2,20 +2,18 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     // polar coordinate systems 
     vec2 uv = fragCoord / iResolution.xy;
-    vec2 cent = vec2(0.5,0.5);
 
-    float r = distance(uv,cent)*2.0;
+    uv = uv - vec2(0.5,0.5);
 
+    float theta = sin(uv.y);
+    
+    float r = distance(uv,vec2(0.0,0.0));
+    vec2 polar = vec2(r,theta);
 
-    float theta = cos(uv.x);
-    vec2 uvP = vec2(theta,r);
+    vec2 Pos = vec2(0.1,0.0);
+    
+    float dist = step(distance(polar,Pos),0.0);
 
-
-    vec2 Pos = vec2(0.0,0.5);
-    float dist = step(distance(Pos,uvP),0.01);
-    //vec3 color = mix(vec3(uvP,0.0),vec3(1,1,1),dist);
-
-
-    vec3 color = vec3(theta);
+    vec3 color = vec3(dist);
     fragColor = vec4(color, 1.0);
 }   
