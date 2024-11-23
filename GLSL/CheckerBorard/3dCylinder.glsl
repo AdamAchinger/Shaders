@@ -3,19 +3,15 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float PI = 3.141592;
     vec2 cent = vec2(0.0,0.0);
 
-
     //PolarCord
     uv = uv - vec2(0.5,0.5);
-    float r = distance(uv,vec2(0.0,0.0));
-    float theta = (atan(uv.y,uv.x)+PI)/(PI*2.0);
-
-    float s = sin(uv.x+0.5);
+    float r = distance(uv,cent);
+    float theta = atan(uv.y,uv.x);
     vec2 uvP = vec2(r,theta);
 
-
     //Checker
-    vec2 uvScale = vec2(50.0,150.0);
-    float revRadius = ((r*-1.0)+1.3);
+    vec2 uvScale = vec2(20.0,20.0);
+    float revRadius = ((r*-1.0)+1.4);
     float distScale = revRadius*5.0; 
     float stripX = step(sin(uvP.x*(uvScale.x*distScale)),0.0);
     float stripY = step(sin(uvP.y*uvScale.y+iTime),0.0);
