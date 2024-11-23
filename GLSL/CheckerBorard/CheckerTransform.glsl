@@ -10,7 +10,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float stripX =  step(sin(uvX*uvScale.x),0.0);
     float stripY =  step(sin(uvY*uvScale.y),0.0);
 
-
     float checker = stripX + stripY;
     float checker3 = max(stripX,stripY);
     float checker1 = floor(checker * 0.5);
