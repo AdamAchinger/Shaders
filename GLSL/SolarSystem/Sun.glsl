@@ -21,11 +21,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     uv = uv - vec2(0.5,0.5);
 
     float centDistR = distance(uv,cent);
+    float angle = (atan(uv.x,uv.y)+PI)/(2.0*PI);
 
     //Sun 
     vec3 sunColor = vec3(0.8706, 0.298, 0.1098);
     vec3 sunAuraColor = vec3(0.6745, 0.4667, 0.2588);
-    float sunSize = 0.25;
+    float sunSize = 0.3;
     float SunMaskSolid = step(distance(uv,cent),sunSize*0.6);
 
     float SunMaskSmooth = smoothstep(sunSize,0.0,distance(uv,cent));
@@ -36,16 +37,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float SunHalo2 = smoothstep(0.05*sunSize,0.00,distance(distance(uv,cent),sunSize*0.6))*1.6;
 
     //Rays 
-    float angle = (atan(uv.x,uv.y)+PI)/(2.0*PI);
+    
     float distToAng = 0.0;
     float iter = 340.0 ;
     for(float i=0.0; i<iter; i++){
         float a = i/iter;       
         
-        float rayTime = sin(iTime*0.005*fRand(a));
+        float rayTime = sin(iTime*0.01*fRand(a));
         float ray = smoothstep(0.01,0.0,distance(angle,a+rayTime));
-        float rayDistTime = (sin(iTime*fRand(a))+PI)/(2.0/PI);
-        float rayDist = smoothstep(rayDistTime*0.06,0.0,centDistR);
+        float rayDistTime = (sin(iTime*fRand(a))+PI)/(2.0/PI) *0.3;
+        float rayDist = smoothstep(rayDistTime * sunSize ,0.0,centDistR);
 
         distToAng += ray * rayDist ;
     }
