@@ -16,7 +16,7 @@ appYpos = int((screenHeight / 2) - (115 / 2))
 root.resizable("FALSE", "FALSE")
 root.geometry(f"{400}x{115}+{appXpos}+{appYpos}")
 root.title("Float Slider")
-
+root.attributes('-topmost', True)
 fileEnt = ctk.CTkEntry(root, width=390, placeholder_text="File Path",font=("Helvetica", 16))
 fileEnt.pack(pady=2)
 
