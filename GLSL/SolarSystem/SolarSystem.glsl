@@ -46,7 +46,7 @@ vec3 SUN( vec2 uv, vec2 uvP, vec2 cent, float PI,vec3 black, float time ){
     for(float i=0.0; i<iter; i++){
         float a = i/iter;       
         
-        float rayTime = sin(iTime*0.01*fRand(a));
+        float rayTime = sin((iTime*0.015)*fRand(a));
         float ray = smoothstep(0.01,0.0,distance(uvP.y,a+rayTime));
         float rayDistTime = (sin(iTime*fRand(a))+PI)/(2.0/PI) *0.3;
         float rayDist = smoothstep(rayDistTime * sunSize ,0.0,uvP.x);
@@ -137,66 +137,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
 
     //Post Process
-    vec3 OUT = vec3(Celestial);
+    vec3 OUT = vec3(Sun);
 
 
     fragColor = vec4(OUT, 1.0);
 }
-
-
-
-
-    /*
-    //Venus 
-    vec3 venuColor = vec3(0.4627, 0.1451, 0.0);
-    float venuOrb = time * 2.0;
-    float venuSize = 0.007;
-    float venuDist = 0.07;
-
-    vec2 VenuPos = vec2(venuDist*sin(venuOrb),venuDist*cos(venuOrb));
-    float VenuMask = step(distance(uv,VenuPos),venuSize);
-    vec3 Venus = mix(black,venuColor,VenuMask);
-
-    //Terra
-    vec3 terrColor = vec3(0.0, 0.2549, 0.0824);
-    float terrOrb = time * 0.25;
-    float terrSize = 0.01;
-    float terrDist = 0.15;
-
-    vec2 TerrPos = vec2(terrDist*sin(terrOrb),terrDist*cos(terrOrb));
-    float TerrMask = step(distance(uv,TerrPos),terrSize);
-    vec3 Terra = mix(black,terrColor,TerrMask);
-
-
-    //Mars
-    vec3 marsColor = vec3(0.4824, 0.3137, 0.0745);
-    float marsOrb = time * 0.2;
-    float marsSize = 0.005;
-    float marsDist = 0.25;
-
-    vec2 MarsPos = vec2(marsDist*sin(marsOrb),marsDist*cos(marsOrb));
-    float MarsMask = step(distance(uv,MarsPos),marsSize);
-    vec3 Mars = mix(black,marsColor,MarsMask);
-
-
-    //Jupiter 
-    vec3 jupiColor = vec3(0.5725, 0.4549, 0.2902);
-    float jupiOrb = time * 0.1;
-    float jupiSize = 0.015;
-    float jupiDist = 0.3;
-
-    vec2 JupiPos = vec2(jupiDist*sin(jupiOrb),jupiDist*cos(jupiOrb));
-    float JupiMask = step(distance(uv,JupiPos),jupiSize);
-    vec3 Jupiter = mix(black,jupiColor,JupiMask);
-
-
-    //Saturn  
-    vec3 satuColor = vec3(0.2118, 0.1216, 0.0353);
-    float satuOrb = time * 0.07;
-    float satuSize = 0.01;
-    float satuDist = 0.4;
-
-    vec2 SatuPos = vec2(satuDist*sin(satuOrb),satuDist*cos(satuOrb));
-    float SatuMask = step(distance(uv,SatuPos),satuSize);
-    vec3 Saturn = mix(black,satuColor,SatuMask);
-    */
