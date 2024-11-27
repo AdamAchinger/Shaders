@@ -137,7 +137,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
 
     //Post Process
-    vec3 OUT = vec3(Sun);
+    vec3 OUT = vec3(Celestial);
 
 
     fragColor = vec4(OUT, 1.0);
