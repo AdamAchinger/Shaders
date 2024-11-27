@@ -25,20 +25,8 @@ float noise(vec2 n) {
     return mix(i1, i2, f.y);
 }
 
-//// Main 
-void mainImage(out vec4 fragColor, in vec2 fragCoord) {    
-    vec2 uv = fragCoord / iResolution.xy;
-    float dim = iResolution.y / iResolution.x;
-    uv = vec2(uv.x, uv.y * dim);
-
-    float PI = 3.14159265;
-    vec2 cent = vec2(0.0,0.0);
-    vec3 black = vec3(0.0,0.0,0.0);
+vec3 SUN(float PI, vec2 uv, vec2 cent, vec3 black, float time){
     
-    float timeSpeed = 0.0; 
-
-    float time = iTime; 
-
     //PolarCord
     uv = uv - vec2(0.5,0.5);
 
@@ -83,11 +71,26 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 Sun = mix(mix(black,sunColor,SunMask1),sunAuraColor, SpaceAura);
     
     /// SUN END /// 
+    return Sun;
+}
 
-//Mercury
+//// Main 
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {    
+    vec2 uv = fragCoord / iResolution.xy;
+    float dim = iResolution.y / iResolution.x;
+    uv = vec2(uv.x, uv.y * dim);
+
+    float PI = 3.14159265;
+    vec2 cent = vec2(0.0,0.0);
+    vec3 black = vec3(0.0, 0.0, 0.0);
+
+    float time = iTime; 
+
+
+//Sun 
+    vec3 Sun = SUN(PI,uv,cent,black,time);
 
     
-
     //Post Proces
     vec3 OUT = vec3(Sun);
     
