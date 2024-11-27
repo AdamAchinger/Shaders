@@ -50,7 +50,7 @@ param1Frame2.pack(pady=4)
 param1Name = ctk.CTkEntry(param1Frame1, placeholder_text="Parameter",font=("Helvetica", 18))
 param1Name.pack(side=LEFT, padx=5)
 
-param1Min = -1.0
+param1Min = 0.0
 param1Max = 1.0
 param1PrevValue = ctk.CTkLabel(param1Frame2, text="0.0", font=("Helvetica", 24),width=60)
 param1PrevValue.pack(side=LEFT,padx=5,pady=5)
@@ -64,7 +64,7 @@ param1Slider = ctk.CTkSlider(
     button_hover_color=COLOR1
 )
 
-param1MinEnt = ctk.CTkEntry(param1Frame1, placeholder_text="-1.0",font=("Helvetica", 18), width=50)
+param1MinEnt = ctk.CTkEntry(param1Frame1, placeholder_text="0.0",font=("Helvetica", 18), width=50)
 param1MinEnt.pack(side=LEFT, padx=2)
 param1MaxEnt = ctk.CTkEntry(param1Frame1, placeholder_text="1.0",font=("Helvetica", 18), width=50)
 param1MaxEnt.pack(side=LEFT, padx=2)
