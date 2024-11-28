@@ -99,7 +99,7 @@ vec4 Mercury( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowCo
 //// Venus
 vec4 Venus( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowColor){
     vec3 venuColor = vec3(0.4039, 0.3333, 0.1137);
-    float venuOrb = time*0.035*0.5;
+    float venuOrb = time*0.038*0.5;
     float venuSize = 0.012;
     float venuDist = 0.1 * 2.0;
     float revUvPX = ((uvP.x*-1.0)+1.0);
@@ -112,14 +112,14 @@ vec4 Venus( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowColo
     float ShadowDist = step(venuDist,uvP.x);   
     float Shadow = max((ShadowAngle * ShadowDist * pow(revUvPX,4.0)) - VenuMask,0.0);
     
-    float glowSize = 0.7;
+    float glowSize = 0.86;
     float innerRing = step(venuSize*glowSize,distance(uv,VenuPos));
     float BrightSideMask =  VenuMask * innerRing * (ShadowDist*-1.0+1.0);
 
     float shadowinnerRing = smoothstep(0.1,0.0,distance(uv,VenuPos));
     float DarkSideMask =  VenuMask * shadowinnerRing * ShadowDist;
 
-    Shadow = max(Shadow,DarkSideMask*0.3);
+    Shadow = max(Shadow,DarkSideMask*0.5);
 
     float venusNoise = max(noise((uv+VenuPos*-1.0+1.0)*1000.0),0.4);
 
