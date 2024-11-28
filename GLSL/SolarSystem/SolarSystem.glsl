@@ -71,9 +71,9 @@ vec3 SUN( vec2 uv, vec2 uvP, vec2 cent, float PI,vec3 black, float time ){
 //// Mercury
 vec4 Mercury( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowColor){
     vec3 mercColor = vec3(0.4941, 0.4941, 0.4941);
-    float mercOrb = time*0.01;
-    float mercSize = 0.005;
-    float mercDist = 0.12;
+    float mercOrb = time*0.047*0.5;
+    float mercSize = 0.0048;
+    float mercDist = 0.057 * 2.0;
     float revUvPX = ((uvP.x*-1.0)+1.0);
     
     float angleTime = fract(mercOrb);
@@ -89,14 +89,45 @@ vec4 Mercury( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowCo
     float BrightSideMask =  MercMask * innerRing * (ShadowDist*-1.0+1.0);
 
 
-    float mercuryNoise = max(noise((uv+MercPos*-1.0+1.0)*1000.0),0.4);
+    float venusNoise = max(noise((uv+MercPos*-1.0+1.0)*1000.0),0.4);
 
-    vec3 Mercury = mix(mix(black,mercColor,MercMask)*mercuryNoise,sunGlowColor,BrightSideMask);
+    vec3 Mercury = mix(mix(black,mercColor,MercMask)*venusNoise,sunGlowColor,BrightSideMask);
     
     vec4 OUT = vec4(Mercury,Shadow);
     return OUT;
 }
+//// Venus
+vec4 Venus( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowColor){
+    vec3 venuColor = vec3(0.4039, 0.3333, 0.1137);
+    float venuOrb = time*0.035*0.5;
+    float venuSize = 0.012;
+    float venuDist = 0.1 * 2.0;
+    float revUvPX = ((uvP.x*-1.0)+1.0);
+    
+    float angleTime = fract(venuOrb);
+    vec2 VenuPos = vec2(sin(angleTime*2.0*PI + PI),cos(angleTime*2.0*PI + PI))* venuDist;
+    float VenuMask = step(distance(uv,VenuPos),venuSize);
 
+    float ShadowAngle = smoothstep(venuSize*1.0,0.0,distance(uvP.y,angleTime));
+    float ShadowDist = step(venuDist,uvP.x);   
+    float Shadow = max((ShadowAngle * ShadowDist * pow(revUvPX,4.0)) - VenuMask,0.0);
+    
+    float glowSize = 0.7;
+    float innerRing = step(venuSize*glowSize,distance(uv,VenuPos));
+    float BrightSideMask =  VenuMask * innerRing * (ShadowDist*-1.0+1.0);
+
+    float shadowinnerRing = smoothstep(0.1,0.0,distance(uv,VenuPos));
+    float DarkSideMask =  VenuMask * shadowinnerRing * ShadowDist;
+
+    Shadow = max(Shadow,DarkSideMask*0.3);
+
+    float venusNoise = max(noise((uv+VenuPos*-1.0+1.0)*1000.0),0.4);
+
+    vec3 Venus = mix(mix(black,venuColor,VenuMask)*venusNoise,sunGlowColor,BrightSideMask);
+
+    vec4 OUT = vec4(Venus,Shadow);
+    return OUT;
+}
 
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {    
@@ -126,11 +157,17 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 Mercury = MercuryPack.xyz;
     float MercuryShadow = MercuryPack.w;
     
-    
-    // Comlite
-    vec3 Celestial = Sun + Mercury ; 
+    //Venus
+    vec4 VenusPack = Venus(uv,uvP,PI,black,time,sunGlowColor);
 
-    float CelestialShadows = MercuryShadow + 0.0 ; 
+    vec3 Venus = VenusPack.xyz;
+    float VenusShadow = VenusPack.w;
+
+
+    // Comlite
+    vec3 Celestial = Sun + Mercury + Venus; 
+
+    float CelestialShadows = MercuryShadow + VenusShadow ; 
 
         CelestialShadows = CelestialShadows*-1.0 +1.0 ;
     Celestial *= CelestialShadows;
