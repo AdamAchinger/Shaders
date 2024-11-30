@@ -89,9 +89,9 @@ vec4 Mercury( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowCo
     float BrightSideMask =  MercMask * innerRing * (ShadowDist*-1.0+1.0);
 
 
-    float venusNoise = max(noise((uv+MercPos*-1.0+1.0)*1000.0),0.4);
+    float mercNoise = max(noise((uv+MercPos*-1.0+1.0)*1000.0),0.4);
 
-    vec3 Mercury = mix(mix(black,mercColor,MercMask)*venusNoise,sunGlowColor,BrightSideMask);
+    vec3 Mercury = mix(mix(black,mercColor,MercMask)*mercNoise,sunGlowColor,BrightSideMask);
     
     vec4 OUT = vec4(Mercury,Shadow);
     return OUT;
@@ -119,7 +119,7 @@ vec4 Venus( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowColo
     float shadowinnerRing = smoothstep(0.1,0.0,distance(uv,VenuPos));
     float DarkSideMask =  VenuMask * shadowinnerRing * ShadowDist;
 
-    Shadow = max(Shadow,DarkSideMask*0.5);
+    Shadow = max(Shadow,DarkSideMask*0.65);
 
     float venusNoise = max(noise((uv+VenuPos*-1.0+1.0)*1000.0),0.4);
 
@@ -128,6 +128,179 @@ vec4 Venus( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowColo
     vec4 OUT = vec4(Venus,Shadow);
     return OUT;
 }
+
+//// Terra
+vec4 Terra( vec2 uv, vec2 uvP, float PI, vec3 black, float time){
+    vec3 Color = vec3(0.0667, 0.102, 0.4235);
+    vec3 Color1 = vec3(0.0, 0.7216, 0.2039);
+    float Orb = time*0.03*0.5;
+    float Size = 0.015;
+    float Dist = 0.15 * 2.0;
+    float revUvPX = ((uvP.x*-1.0)+1.0);
+    
+    float angleTime = fract(Orb);
+    vec2 Pos = vec2(sin(angleTime*2.0*PI + PI),cos(angleTime*2.0*PI + PI))* Dist;
+    float Mask = step(distance(uv,Pos),Size);
+
+    float ShadowAngle = smoothstep(Size*0.7,0.0,distance(uvP.y,angleTime));
+    float ShadowDist = step(Dist,uvP.x);   
+    float Shadow = max((ShadowAngle * ShadowDist * pow(revUvPX,0.9)) - Mask,0.0);
+    
+    float glowSize = 0.86;
+    float innerRing = step(Size*glowSize,distance(uv,Pos));
+    float BrightSideMask =  Mask * innerRing * (ShadowDist*-1.0+1.0);
+
+    float shadowinnerRing = smoothstep(0.1,0.0,distance(uv,Pos));
+    float DarkSideMask =  Mask * ShadowDist * 0.7;
+
+    Shadow = max(Shadow*0.6,DarkSideMask);
+
+    float Noise = max(noise((uv+Pos*-1.0+1.0)*300.0),0.4);
+    vec3 sunGlowColor = vec3(0.5843, 0.5843, 0.5843);
+    float contin = pow((Noise*Mask),2.0);
+    vec3 Terra = mix(mix(mix(black,Color,Mask),Color1,contin),sunGlowColor,BrightSideMask*0.25);
+
+    vec4 OUT = vec4(Terra,Shadow);
+    return OUT;
+}
+
+
+//// Moon
+vec4 Moon( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowColor){
+    vec3 Color = vec3(0.4941, 0.4941, 0.4941);
+    float Orb = time*0.03*0.5;
+    float Size = 0.003;
+    float Dist = 0.15 * 2.0;
+    float revUvPX = ((uvP.x*-1.0)+1.0);
+
+
+    float angleTime1 = fract(Orb*40.0);
+    float angleTime = fract(Orb);
+    vec2 Pos1 = vec2(sin(angleTime1*2.0*PI + PI),cos(angleTime1*2.0*PI + PI))* Dist*0.35;
+    vec2 Pos = vec2(sin(angleTime*2.0*PI + PI)+Pos1.x,cos(angleTime*2.0*PI + PI)+Pos1.y)* Dist;
+    
+    float Mask = step(distance(uv,Pos),Size);
+    
+    float ShadowAngle = smoothstep(Size*2.3,0.0,distance(uvP.y,angleTime));
+    float ShadowDist = step(Dist,uvP.x);   
+    float Shadow = max((ShadowAngle * ShadowDist * pow(revUvPX,3.0)) - Mask,0.0) ;
+
+    float glowSize = 0.5;
+    float innerRing = step(Size*glowSize,distance(uv,Pos)); 
+    float BrightSideMask =  Mask * innerRing * (ShadowDist*-1.0+1.0);
+
+
+    float Noise = max(noise((uv+Pos*-1.0+1.0)*1000.0),0.4);
+
+    vec3 Moon = mix(mix(black,Color,Mask)*Noise,sunGlowColor,BrightSideMask);
+    
+    vec4 OUT = vec4(Moon,Shadow);
+    return OUT;
+}
+
+
+//// Mars
+vec4 Mars( vec2 uv, vec2 uvP, float PI, vec3 black, float time){
+    vec3 Color = vec3(0.3451, 0.2431, 0.0902);
+    vec3 Color1 = vec3(0.0, 0.0, 0.0);
+    float Orb = time*0.024*0.5 + 0.7;
+    float Size = 0.011;
+    float Dist = 0.22 * 2.0;
+    float revUvPX = ((uvP.x*-1.0)+1.0);
+    
+    float angleTime = fract(Orb);
+    vec2 Pos = vec2(sin(angleTime*2.0*PI + PI),cos(angleTime*2.0*PI + PI))* Dist;
+    float Mask = step(distance(uv,Pos),Size);
+
+    float ShadowAngle = smoothstep(Size*0.55,0.0,distance(uvP.y,angleTime));
+    float ShadowDist = step(Dist,uvP.x);   
+    float Shadow = max((ShadowAngle * ShadowDist * pow(revUvPX,0.7)) - Mask,0.0);
+    
+    float glowSize = 0.86;
+    float innerRing = step(Size*glowSize,distance(uv,Pos));
+    float BrightSideMask =  Mask * innerRing * (ShadowDist*-1.0+1.0);
+
+    float shadowinnerRing = smoothstep(0.1,0.0,distance(uv,Pos));
+    float DarkSideMask =  Mask * ShadowDist * 0.7;
+
+    Shadow = max(Shadow,DarkSideMask);
+
+    float Noise = max(noise((uv+Pos*-1.0+1.0)*1000.0),0.0);
+    vec3 sunGlowColor = vec3(0.5843, 0.5843, 0.5843);
+    float contin = pow((Noise*Mask),2.0);
+    vec3 Mars = mix(mix(mix(black,Color,Mask),Color1,contin),sunGlowColor,BrightSideMask*0.25);
+
+    vec4 OUT = vec4(Mars,Shadow);
+    return OUT;
+}
+
+
+//// Fobos
+vec4 Fobos( vec2 uv, vec2 uvP, float PI, vec3 black, float time){
+    vec3 Color = vec3(0.4941, 0.4941, 0.4941);
+    float Orb = time*0.024*0.5 + 0.7;
+    float Size = 0.002;
+    float Dist = 0.22 * 2.0;
+    float revUvPX = ((uvP.x*-1.0)+1.0);
+
+
+    float angleTime1 = fract(Orb*25.0+0.1);
+    float angleTime = fract(Orb);
+    vec2 Pos1 = vec2(sin(angleTime1*2.0*PI + PI),cos(angleTime1*2.0*PI + PI))* Dist*0.15;
+    vec2 Pos = vec2(sin(angleTime*2.0*PI + PI)+Pos1.x,cos(angleTime*2.0*PI + PI)+Pos1.y)* Dist;
+    
+    float Mask = step(distance(uv,Pos),Size);
+    
+    float ShadowAngle = smoothstep(Size*2.3,0.0,distance(uvP.y,angleTime));
+    float ShadowDist = step(Dist,uvP.x);   
+    float Shadow = max((ShadowAngle * ShadowDist * pow(revUvPX,3.0)) - Mask,0.0) ;
+
+    float glowSize = 0.5;
+    float innerRing = step(Size*glowSize,distance(uv,Pos)); 
+    float BrightSideMask =  Mask * innerRing * (ShadowDist*-1.0+1.0);
+
+
+    float Noise = max(noise((uv+Pos*-1.0+1.0)*1000.0),0.4);
+
+    vec3 Fobos = mix(black,Color,Mask)*Noise;
+    
+    vec4 OUT = vec4(Fobos,Shadow);
+    return OUT;
+}
+
+//// Deimos
+vec4 Deimos( vec2 uv, vec2 uvP, float PI, vec3 black, float time){
+    vec3 Color = vec3(0.4941, 0.4941, 0.4941);
+    float Orb = time*0.024*0.5 + 0.7;
+    float Size = 0.002;
+    float Dist = 0.22 * 2.0;
+    float revUvPX = ((uvP.x*-1.0)+1.0);
+
+
+    float angleTime1 = fract(Orb*20.0);
+    float angleTime = fract(Orb);
+    vec2 Pos1 = vec2(sin(angleTime1*2.0*PI + PI+0.5),cos(angleTime1*2.0*PI + PI+0.5))* Dist*0.1;
+    vec2 Pos = vec2(sin(angleTime*2.0*PI + PI)+Pos1.x,cos(angleTime*2.0*PI + PI)+Pos1.y)* Dist;
+    
+    float Mask = step(distance(uv,Pos),Size);
+    
+    float ShadowAngle = smoothstep(Size*2.3,0.0,distance(uvP.y,angleTime));
+    float ShadowDist = step(Dist,uvP.x);   
+    float Shadow = max((ShadowAngle * ShadowDist * pow(revUvPX,3.0)) - Mask,0.0) ;
+
+    float glowSize = 0.5;
+    float innerRing = step(Size*glowSize,distance(uv,Pos)); 
+    float BrightSideMask =  Mask * innerRing * (ShadowDist*-1.0+1.0);
+
+
+    float Noise = max(noise((uv+Pos*-1.0+1.0)*1000.0),0.4);
+
+    vec3 Deimos = mix(black,Color,Mask)*Noise;
+    
+    vec4 OUT = vec4(Deimos,Shadow);
+    return OUT;
+}
+
 
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {    
@@ -153,23 +326,47 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     //Mercury 
     vec4 MercuryPack = Mercury(uv,uvP,PI,black,time,sunGlowColor);
-
     vec3 Mercury = MercuryPack.xyz;
     float MercuryShadow = MercuryPack.w;
     
     //Venus
     vec4 VenusPack = Venus(uv,uvP,PI,black,time,sunGlowColor);
-
     vec3 Venus = VenusPack.xyz;
     float VenusShadow = VenusPack.w;
 
+    //Terra
+    vec4 TerraPack = Terra(uv,uvP,PI,black,time);
+    vec3 Terra = TerraPack.xyz;
+    float TerraShadow = TerraPack.w;
+
+    //Moon
+    vec4 MoonPack = Moon(uv,uvP,PI,black,time,sunGlowColor);
+    vec3 Moon = MoonPack.xyz;
+    float MoonShadow = MoonPack.w;
+
+    //Mars
+    vec4 MarsPack = Mars(uv,uvP,PI,black,time);
+    vec3 Mars = MarsPack.xyz;
+    float MarsShadow = MarsPack.w;
+    
+    //Fobos
+    vec4 FobosPack = Fobos(uv,uvP,PI,black,time);
+    vec3 Fobos = FobosPack.xyz;
+    float FobosShadow = FobosPack.w;
+        
+    //Deimos
+    vec4 DeimosPack = Deimos(uv,uvP,PI,black,time);
+    vec3 Deimos = DeimosPack.xyz;
+    float DeimosShadow = DeimosPack.w;
+
+
 
     // Comlite
-    vec3 Celestial = Sun + Mercury + Venus; 
+    vec3 Celestial = Sun + Mercury + Venus + Terra + Moon + Mars + Fobos + Deimos; 
 
-    float CelestialShadows = MercuryShadow + VenusShadow ; 
+    float CelestialShadows = MercuryShadow + VenusShadow + TerraShadow + MarsShadow; 
 
-        CelestialShadows = CelestialShadows*-1.0 +1.0 ;
+    CelestialShadows = CelestialShadows*-1.0 +1.0 ;
     Celestial *= CelestialShadows;
 
 
