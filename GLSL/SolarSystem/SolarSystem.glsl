@@ -42,11 +42,11 @@ vec3 SUN( vec2 uv, vec2 uvP, vec2 cent, float PI,vec3 black, float time ){
     //Rays 
     
     float distToAng = 0.0;
-    float iter = 340.0 ;
+    float iter = 300.0 ;
     for(float i=0.0; i<iter; i++){
         float a = i/iter;       
         
-        float rayTime = sin((iTime*0.015)*fRand(a));
+        float rayTime = sin((iTime*0.04)*fRand(a));
         float ray = smoothstep(0.01,0.0,distance(uvP.y,a+rayTime));
         float rayDistTime = (sin(iTime*fRand(a))+PI)/(2.0/PI) *0.3;
         float rayDist = smoothstep(rayDistTime * sunSize ,0.0,uvP.x);
@@ -65,7 +65,8 @@ vec3 SUN( vec2 uv, vec2 uvP, vec2 cent, float PI,vec3 black, float time ){
     vec3 Sun = mix(mix(black,sunColor,SunMask1),sunAuraColor, SpaceAura);
     
     /// SUN END /// 
-    return Sun;
+    vec3 OUT = Sun;
+    return OUT;
 }
 
 //// Mercury
@@ -174,7 +175,7 @@ vec4 Moon( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowColor
     float revUvPX = ((uvP.x*-1.0)+1.0);
 
 
-    float angleTime1 = fract(Orb*40.0);
+    float angleTime1 = fract(Orb*20.0);
     float angleTime = fract(Orb);
     vec2 Pos1 = vec2(sin(angleTime1*2.0*PI + PI),cos(angleTime1*2.0*PI + PI))* Dist*0.35;
     vec2 Pos = vec2(sin(angleTime*2.0*PI + PI)+Pos1.x,cos(angleTime*2.0*PI + PI)+Pos1.y)* Dist;
