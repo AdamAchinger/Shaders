@@ -71,7 +71,7 @@ vec3 SUN( vec2 uv, vec2 uvP, vec2 cent, float PI,vec3 black, float time ){
 //// Mercury
 vec4 Mercury( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowColor){
     vec3 mercColor = vec3(0.4941, 0.4941, 0.4941);
-    float mercOrb = time*0.047*0.5;
+    float mercOrb = time*0.047*0.5 + 0.4;
     float mercSize = 0.0048;
     float mercDist = 0.057 * 2.0;
     float revUvPX = ((uvP.x*-1.0)+1.0);
