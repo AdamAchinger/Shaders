@@ -83,11 +83,13 @@ vec4 Mercury( vec2 uv, vec2 uvP, float PI, vec3 black, float time,vec3 sunGlowCo
 
     float ShadowAngle = smoothstep(mercSize*2.3,0.0,distance(uvP.y,angleTime));
     float ShadowDist = step(mercDist,uvP.x);   
-    float Shadow = max((ShadowAngle * ShadowDist * pow(revUvPX,9.0)) - MercMask,0.0) ;
+    float Shadow = max((ShadowAngle * ShadowDist * pow(revUvPX,9.0)),0.0) ;
+
 
     float glowSize = 0.5;
     float innerRing = step(mercSize*glowSize,distance(uv,MercPos)); 
     float BrightSideMask =  MercMask * innerRing * (ShadowDist*-1.0+1.0);
+    
 
 
     float mercNoise = max(noise((uv+MercPos*-1.0+1.0)*1000.0),0.4);
@@ -138,7 +140,7 @@ vec4 Terra( vec2 uv, vec2 uvP, float PI, vec3 black, float time){
     float Size = 0.015;
     float Dist = 0.15 * 2.0;
     float revUvPX = ((uvP.x*-1.0)+1.0);
-    
+
     float angleTime = fract(Orb);
     vec2 Pos = vec2(sin(angleTime*2.0*PI + PI),cos(angleTime*2.0*PI + PI))* Dist;
     float Mask = step(distance(uv,Pos),Size);
@@ -303,14 +305,39 @@ vec4 Deimos( vec2 uv, vec2 uvP, float PI, vec3 black, float time){
 }
 
 
+//// AsteroidBelt
+vec4 AsteroidBelt( vec2 uv, vec2 uvP, float PI, float time){
+    float time1 = time *0.05 * -1.0;
+    uv = vec2(
+        uv.x * cos(time1) + uv.y * sin(time1),
+        uv.x * sin(time1) - uv.y * cos(time1)
+    );
+
+    float Noise = noise((uv*500.0)+fract(time*100.1))*0.2;
+    
+    float asteorMask = smoothstep(0.15,0.0,distance(0.65,uvP.x));
+    vec3 AsteroidBelt = vec3(pow(Noise,1.2)) * asteorMask*0.4;
+    
+
+
+    vec4 OUT = vec4(AsteroidBelt,0.0);
+    return OUT;
+}
+
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {    
     vec2 uv = fragCoord / iResolution.xy;
+    vec2 mouse = vec2(iMouse.x,iMouse.y);
     float dim = iResolution.y / iResolution.x;
-    uv = vec2(uv.x, uv.y * dim);
-    uv = uv - vec2(0.5,0.5);
 
+    float uvScale = 1.1;
 
+    uv -= vec2(mouse.x*dim,mouse.y)*0.001;
+    uv = vec2(uv.x,uv.y*dim) - (vec2(0.05,0.035)*uvScale);
+
+    uv *= uvScale;
+
+    
     float PI = 3.14159265;
     vec2 cent = vec2(0.0,0.0);
     vec3 black = vec3(0.0,0.0,0.0);
@@ -359,11 +386,15 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec4 DeimosPack = Deimos(uv,uvP,PI,black,time);
     vec3 Deimos = DeimosPack.xyz;
     float DeimosShadow = DeimosPack.w;
+    
+    //AsteroidBelt
+    vec4 AsteroidBeltPack = AsteroidBelt(uv,uvP,PI,time);
+    vec3 AsteroidBelt = AsteroidBeltPack.xyz;
 
 
 
     // Comlite
-    vec3 Celestial = Sun + Mercury + Venus + Terra + Moon + Mars + Fobos + Deimos; 
+    vec3 Celestial = Sun + Mercury + Venus + Terra + Moon + Mars + Fobos + Deimos + AsteroidBelt ; 
 
     float CelestialShadows = MercuryShadow + VenusShadow + TerraShadow + MarsShadow; 
 
