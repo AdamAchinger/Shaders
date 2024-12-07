@@ -46,18 +46,18 @@ vec3 SUN( vec2 uv, vec2 uvP, vec2 cent, float PI,vec3 black, float time ){
     for(float i=0.0; i<iter; i++){
         float a = i/iter;       
         
-        float rayTime = sin((iTime*0.04)*fRand(a));
+        float rayTime = sin((iTime*0.05)*fRand(a));
         float ray = smoothstep(0.01,0.0,distance(uvP.y,a+rayTime));
-        float rayDistTime = (sin(iTime*fRand(a))+PI)/(2.0/PI) *0.3;
+        float rayDistTime = (sin(iTime*fRand(a))+PI)/(2.0/PI) *0.4;
         float rayDist = smoothstep(rayDistTime * sunSize ,0.0,uvP.x);
 
         distToAng += ray * rayDist ;
     }
 
     float sunRays = max(min(SunMaskSmooth * distToAng,1.0) - SunMaskSolid,0.0);
-    float noiseScale = 64.0;
+    float noiseScale = 77.0;
     noiseScale /= sunSize;
-    float sunNoise = mix(noise(uv*noiseScale*0.4+vec2(time*0.25,0.0)),noise(uv*noiseScale+vec2(time*0.5,0.2)),(sin(iTime)+PI)/(2.0*PI));
+    float sunNoise = mix(noise(uv*noiseScale*0.4+vec2(time*1.3,0.0)),noise(uv*noiseScale+vec2(time*0.7,0.2)),(sin(iTime)+PI)/(2.0*PI));
     float SunMask1 =  min(sunRays + SunMaskSolid + (SunMaskSmooth*sunNoise*SunMaskSolid) + SunHalo1 + SunHalo2,3.0);
     
     SunMask1 -= (SunMaskSmooth*SunMaskSmooth) * SunMaskSolid;
@@ -330,7 +330,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 mouse = vec2(iMouse.x,iMouse.y);
     float dim = iResolution.y / iResolution.x;
 
-    float uvScale = 1.1;
+    float uvScale = 1.5;
 
     uv -= vec2(mouse.x*dim,mouse.y)*0.001;
     uv = vec2(uv.x,uv.y*dim) - (vec2(0.05,0.035)*uvScale);
