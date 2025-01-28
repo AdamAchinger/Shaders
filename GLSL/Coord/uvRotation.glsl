@@ -15,7 +15,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     
 
     // CHECKER 
-    vec2 uvCScale = vec2(50.0,50.0);
+    vec2 uvCScale = vec2(100.0,100.0);
     float stripX =  step(sin(uv.x*uvCScale.x),0.0);
     float stripY =  step(sin(uv.y*uvCScale.y),0.0);
     float checkerA = stripX + stripY;
